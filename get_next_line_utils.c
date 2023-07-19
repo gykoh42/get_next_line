@@ -6,7 +6,7 @@
 /*   By: gykoh <gykoh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 15:00:30 by gykoh             #+#    #+#             */
-/*   Updated: 2023/07/18 17:01:16 by gykoh            ###   ########.fr       */
+/*   Updated: 2023/07/19 17:14:39 by gykoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,17 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	size_t s1_len;
-	size_t s2_len;
-	size_t total_size;
-	
+	char	*answer;
+	size_t	s1_len;
+	size_t	s2_len;
+	size_t	total_size;
+
+	if (s1 == 0 || s2 == 0)
+		return (0);
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
 	total_size = s1_len + s2_len + 1;
-	if (s1 == 0 || s2 == 0)
-		return (0);
-	char *answer = (char *)malloc(sizeof(char) * total_size);
+	answer = (char *)malloc(sizeof(char) * total_size);
 	if (!answer)
 		return (0);
 	ft_strlcpy(answer, s1, total_size);
