@@ -6,21 +6,11 @@
 /*   By: gykoh <gykoh@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 15:00:26 by gykoh             #+#    #+#             */
-/*   Updated: 2023/07/19 17:17:56 by gykoh            ###   ########.fr       */
+/*   Updated: 2023/07/20 14:48:06 by gykoh            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-static char	*ft_free_storage(char **storage)
-{
-	if (storage && *storage)
-	{
-		free(*storage);
-		*storage = NULL;
-	}
-	return (NULL);
-}
 
 static char	*ft_read_line(int fd, char *storage)
 {
@@ -33,7 +23,10 @@ static char	*ft_read_line(int fd, char *storage)
 	{
 		read_size = read(fd, buff, BUFFER_SIZE);
 		if (read_size < 0)
-			return (ft_free_storage(&storage));
+		{
+			free(storage);
+			return (NULL);
+		}
 		buff[read_size] = '\0';
 		tmp = storage;
 		if (!tmp)
@@ -60,7 +53,11 @@ static char	*ft_extract_line(char **storage)
 		line_len = newline_pos - *storage + 1;
 	line = (char *)malloc(sizeof(char) * (line_len + 1));
 	if (!line)
-		return (ft_free_storage(storage));
+	{
+		free (*storage);
+		*storage = NULL;
+		return (NULL);
+	}
 	ft_strlcpy(line, *storage, line_len + 1);
 	*storage = NULL;
 	if (newline_pos)
@@ -78,26 +75,11 @@ char	*get_next_line(int fd)
 		return (NULL);
 	storage = ft_read_line(fd, storage);
 	if (storage == NULL || *storage == 0)
-		return (ft_free_storage(&storage));
+	{
+		free (storage);
+		storage = NULL;
+		return (NULL);
+	}
 	line = ft_extract_line(&storage);
 	return (line);
 }
-
-// #include <stdio.h>
-// #include <fcntl.h>
-
-// int main(int argc, char **argv)
-// {
-//     int fd;
-//     char *str;
-
-//     if (argc != 2)
-//         return (0);
-//     fd = open(argv[1], O_RDONLY);
-//     while ((str = get_next_line(fd)))
-//     {
-//         printf("|%s|\n", str);
-//         free(str);
-//     }
-//     return (0);
-// }
